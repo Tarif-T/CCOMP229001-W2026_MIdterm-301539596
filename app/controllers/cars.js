@@ -1,5 +1,25 @@
 let CarModel = require('../models/cars');
 
+function sanitizeCarInput(input) {
+  let car = { ...input };
+  let numericFields = ['year', 'kilometers', 'doors', 'seats', 'price'];
+
+  for (let field of numericFields) {
+    if (car[field] === undefined || car[field] === null) {
+      continue;
+    }
+
+    if (typeof car[field] === 'string') {
+      let normalized = car[field].replace(/[^0-9.-]/g, '');
+      if (normalized.length > 0) {
+        car[field] = Number(normalized);
+      }
+    }
+  }
+
+  return car;
+}
+
 module.exports.getCar = async function (req, res, next) {
   try {
     // Find one using the id sent in the parameter of the request
@@ -29,7 +49,7 @@ module.exports.getCar = async function (req, res, next) {
 module.exports.create = async function (req, res, next) {
   try {
     // Get input from the request
-    let car = req.body;
+    let car = sanitizeCarInput(req.body);
 
     // Insert into the DB
     let result = await CarModel.create(car);
@@ -76,7 +96,7 @@ module.exports.getAll = async function (req, res, next) {
 module.exports.update = async function (req, res, next) {
   try {
     // Create a car object from the request body
-    let updatedCar = req.body;
+    let updatedCar = sanitizeCarInput(req.body);
     
     // Change the _id to use the one received in the request parameters.
     updatedCar._id = req.params.carId;
