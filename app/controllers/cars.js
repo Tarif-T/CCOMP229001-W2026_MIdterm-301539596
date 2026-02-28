@@ -3,10 +3,21 @@ let CarModel = require('../models/cars');
 module.exports.getCar = async function (req, res, next) {
   try {
     // Find one using the id sent in the parameter of the request
-    let car = await CarModel.findOne({ _id: req.params.id });
+    let car = await CarModel.findOne({ _id: req.params.carId });
 
     // Set the response status
+    if (!car) {
+      throw new Error('Car not found. Are you sure it exists?');
+    }
+
     res.status(200);
+    res.json(
+      {
+        success: true,
+        message: "Car retrieved successfully.",
+        data: car
+      }
+    );
 
 
   } catch (error) {
@@ -65,13 +76,14 @@ module.exports.getAll = async function (req, res, next) {
 module.exports.update = async function (req, res, next) {
   try {
     // Create a car object from the request body
-    let updatedCar = CarModel(req.body);
+    let updatedCar = req.body;
     
     // Change the _id to use the one received in the request parameters.
-    updatedCar._id = req.params.id;
+    updatedCar._id = req.params.carId;
+    updatedCar.updated = Date.now();
 
     // Submit the change
-    let result = await CarModel.updateOne();
+    let result = await CarModel.updateOne({ _id: req.params.carId }, updatedCar);
     console.log("Result: " + result);
 
     // Handle the result: send a response.
