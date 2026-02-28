@@ -1,7 +1,7 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
 
-let ConnectionString = process.env.CONNECTION_STRING || "mongodb+srv://tarifabdalla22:<COMP229>@clustermidterm.ocyqdoy.mongodb.net/?appName=ClusterMidterm+srv://<username>:<password>@<cluster-url>/<database>?retryWrites=true&w=majority";
+let ConnectionString = process.env.CONNECTION_STRING || "mongodb+srv://tarifabdalla22:<COMP229>@clustermidterm.ocyqdoy.mongodb.net/?appName=ClusterMidterm";
 
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
